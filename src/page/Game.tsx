@@ -3,6 +3,7 @@ import { learnData } from "../data/english";
 import { Link } from "react-router-dom";
 import { ed, eq } from "../helpers/dom";
 import classNames from "classnames";
+
 function shuffle(array) {
     let currentIndex = array.length, randomIndex;
 
@@ -20,6 +21,8 @@ function shuffle(array) {
 
     return array;
 }
+
+
 
 export const Game = () => {
     const answerWidth = 300;
@@ -59,20 +62,44 @@ export const Game = () => {
         let from = startSide == "left" ? startIndex : endIndex;
         let to = startSide == "left" ? endIndex : startIndex;
         setConnections([...connections, { from: from, to: to }]);
+        setStartSide(null);
+        setEndSide(null);
     }
-    const onTouchStart = (e: any) => {
 
+    const getKnobPosition = (side: string, index: number) => {
+        let rect = svgRef.current.getBoundingClientRect();
+        let answerDOM = eq('#' + side + 'knot' + index)[0];
+        let knobRect = answerDOM.getBoundingClientRect();
+        let sx = (knobRect.left - rect.left);
+        let sy = (knobRect.top - rect.top);
+        return [sx, sy];
     }
-    const onTouchMove = (e: any) => {
-        onMouseMove(e.changedTouches[0]);
-    }
+
+    // const onTouchStart = (e: any) => {
+
+    // }
+    // const onTouchMove = (e: any) => {
+    //     onMouseMove(e.changedTouches[0]);
+    // }
     const onMouseDown = (e: any) => {
         let side = e.target.dataset.side;
         let index = e.target.dataset.index;
-        if(side && startSide == null) {
+        // if(side==startSide && index==startIndex) {
+        //     setStartSide(null);
+        //     return;
+        // }
+        if (!side) return;
+        if (startSide == null) {
             setStartSide(side);
             setStartIndex(index);
             setDragging(true);
+            return;
+        } else {
+            if(side == startSide) return
+            setEndSide(side);
+            setEndIndex(index);
+            // setDragging(true);
+            return;
         }
     }
     const onMouseMove = (e: any) => {
@@ -89,25 +116,38 @@ export const Game = () => {
 
             // } else {
             // }
-            let rect = svgRef.current.getBoundingClientRect();
-            let vx = (e.clientX || e.touches[0].pageX);
-            var vy = (e.clientY || e.touches[0].pageY);
-            let rx = vx - rect.left;
-            var ry = vy - rect.top;
+      
+            const vx = (e.clientX || e.touches[0].pageX);
+            const vy = (e.clientY || e.touches[0].pageY);
+            const elementTouched: any = document.elementFromPoint(vx, vy);
+            const rect = svgRef.current.getBoundingClientRect();
+            const isAnswer = elementTouched.dataset.answer;
+            var rx = vx - rect.left;
+            var ry = vy - rect.top;   
 
-
-            let answerDOM = eq('#' + startSide + 'knot' + startIndex)[0];
-            let knobRect = answerDOM.getBoundingClientRect();
-            let sx = (knobRect.left - rect.left);
-            let sy = (knobRect.top - rect.top);
-
-            drawLine(sx, sy, rx, ry);
-
-            var elementTouched:any = document.elementFromPoint(vx, vy);
-            if(elementTouched.dataset.answer) {
-                setInfo("ANS");
+            const [sx, sy] = getKnobPosition(startSide, startIndex);
+            if(isAnswer) {
+                const side = elementTouched.dataset.side;
+                const index = elementTouched.dataset.index;
+                if(side!==startSide){
+                    setEndSide(side);
+                    setEndIndex(index);
+                    const [ex, ey] = getKnobPosition(side, index);
+                    drawLine(sx, sy, ex, ey);
+                }else{
+                    drawLine(sx, sy, rx, ry);
+                }
             }else{
-                setInfo("");                
+               
+             
+                drawLine(sx, sy, rx, ry);
+            }
+
+            if (isAnswer) {
+              
+                // setInfo("ANS");
+            } else {
+                // setInfo("");
 
             }
 
@@ -119,31 +159,39 @@ export const Game = () => {
             //     setEndIndex(index);
             //     // addConnection(endSide, index);
             //     // setStartSide(null);
-            }
+        }
         //}
         // setMouseX( e.touches[0].pageX);
     }
     const onMouseUp = (e: any) => {
         console.log("Canvas Mouse up");
         setDragging(false);
-        setStartSide(null);
+        // setStartSide(null);
         // let endSide = e.target.dataset.side;
-        if (endSide && startSide && startSide !== endSide) {
-            let index = e.target.dataset.index;
-            addConnection();
-            setStartSide(null);
+        if (endSide && startSide) {
+
+            if (startSide !== endSide) {
+                addConnection();
+            } else {
+
+                setStartSide(null);
+                setEndSide(null);
+
+            }
+            // let index = e.target.dataset.index;
+            // setStartSide(null);
         }
 
         // setStartSide(side);
         // setStartIndex(index);
     }
-    const onAnswerMouseUp = (e: any) => {
-        e.stopPropagation();
-        setDragging(false);
-      
+    // const onAnswerMouseUp = (e: any) => {
+    //     e.stopPropagation();
+    //     setDragging(false);
 
-        // setDragging(false);
-    }
+
+    //     // setDragging(false);
+    // }
     const onSubmit = (e: any) => {
         console.log(questions, answers);
     }
@@ -166,7 +214,7 @@ export const Game = () => {
         <>
             <div className="game-top-left">
                 <div>{dragging ? "Dragging" : "-"}</div>
-                <div>S{info}</div>
+                <div>S{startSide}{startIndex} To E{endSide}{endIndex}, INFO {info}</div>
                 {
                     connections.map(o => {
                         return (
@@ -196,7 +244,9 @@ export const Game = () => {
                             {questions.map((o, key) => {
                                 let index = key + 1;
                                 let item = learnData.filter(l => l.id == o)[0];
-                                let CSS = classNames("answer", { "is-pulsing": (startSide == "left" && startIndex == index) });
+                                let CSS = classNames("answer",
+                                    { "is-pulsing": (startSide == "left" && startIndex == index) || (endSide == "left" && endIndex == index) }
+                                );
                                 return (
                                     <div
                                         key={item.en}
@@ -205,9 +255,9 @@ export const Game = () => {
                                         data-index={(index)}
                                         data-side="left"
                                         data-operation={`enword${index}`}
-                                        // onMouseDown={(e) => onAnswerMouseDown(e)}
-                                        // onTouchStart={(e) => onAnswerMouseDown(e)}
-                           
+                                    // onMouseDown={(e) => onAnswerMouseDown(e)}
+                                    // onTouchStart={(e) => onAnswerMouseDown(e)}
+
                                     >
                                         <span className="lknot" id={`leftknot${index}`}></span>
                                         <audio id={`enaudio${item.id}`} controls={false} autoPlay={false}>
@@ -223,7 +273,9 @@ export const Game = () => {
                             {answers.map((o, key) => {
                                 let index = key + 1;
                                 let item = learnData.filter(l => l.id == o)[0];
-                                let CSS = classNames("answer", { "is-pulsing": (startSide == "right" && startIndex == index) });
+                                let CSS = classNames("answer",
+                                    { "is-pulsing": (startSide == "right" && startIndex == index) || (endSide == "right" && endIndex == index) }
+                                );
                                 return (
                                     <div
                                         key={item.cs}
@@ -232,10 +284,10 @@ export const Game = () => {
                                         data-index={(index)}
                                         data-side="right"
                                         data-operation={`csword${index}`}
-                                        // onMouseDown={(e) => onAnswerMouseDown(e)}
-                                        // onTouchStart={(e) => onAnswerMouseDown(e)}
-                                    
-                                                                            >
+                                    // onMouseDown={(e) => onAnswerMouseDown(e)}
+                                    // onTouchStart={(e) => onAnswerMouseDown(e)}
+
+                                    >
                                         <span className="rknot" id={`rightknot${index}`}></span>
                                         <audio id={`csaudio${item.id}`} controls={false} autoPlay={false}>
                                             <source src={`./asset/${item.id}-cs.mp3`} type="audio/mpeg" />
