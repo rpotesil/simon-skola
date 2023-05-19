@@ -1,0 +1,83 @@
+.menu-cta {
+	background-color: orange;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-size: 20px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.menu-cta:hover {
+	background-color: #ff6600;
+}
+
+.menu-close {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	width: 32px;
+	height: 32px;
+	font-size: 24px;
+	text-decoration: none;
+	color: $text;
+	&:before {
+		@include icomoon;
+		line-height: 32px;
+	}
+}
+
+.menu-button {
+	@include button-reset;
+	padding: 0;
+	width: 48px;
+	height: 48px;
+	font-size: 38px;
+	text-decoration: none;
+	color: #fff;
+	&:before {
+		@include icomoon;
+		line-height: 48px;
+	}
+}
+
+.audio-play {
+	@include button-reset;
+	padding: 0;
+	width: 48px;
+	height: 48px;
+	font-size: 38px;
+	text-decoration: none;
+	color: #fff;
+	&:before {
+		@include icomoon;
+		line-height: 48px;
+	}
+	border-radius: 50%;
+	background-color: transparent;
+	position: relative;
+	overflow: hidden;
+	cursor: pointer;
+	position: relative;
+	text-align: center;
+
+	// &:after {
+	// 	content: "";
+	// 	position: absolute;
+	// 	left: calc(50% - 24px);
+	// 	top: calc(50% - 24px);
+	// 	width: 48px;
+	// 	height: 48px;
+	// 	border-radius: 50%;
+	// 	background-color: white;
+	// 	opacity: 0;
+	// 	transform: scale(0);
+	// 	transition: opacity 0.3s, transform 0.3s;
+	// }
+
+	&:active:after {
+		opacity: 0.3;
+		transform: scale(1);
+	}
+}

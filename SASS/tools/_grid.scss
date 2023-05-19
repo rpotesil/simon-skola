@@ -1,0 +1,211 @@
+$grid-total-columns: 12;
+$grid-breakpoint-xxs: 320px;
+$grid-breakpoint-xs: 660px;
+$grid-breakpoint-sm: 1000px;
+$grid-breakpoint-md: 1340px;
+$grid-breakpoint-lg: 1680px;
+$grid-gutter: 12px;
+$grid-narrow-gutter: 5px;
+$grid-wide-gutter: 24px;
+ 
+//row
+.row {
+	margin-left: -($grid-gutter);
+	margin-right: -($grid-gutter);
+	display: flex;
+	flex-wrap: wrap;
+}
+
+//Force one line
+.row.nowrap {
+	flex-wrap: nowrap;
+}
+
+//Default gutter
+[class^="col-"] { //all columns
+	padding-left: $grid-gutter;
+	padding-right: $grid-gutter;
+	box-sizing: border-box;
+	flex: 0 1 auto;
+	max-width: 100%;
+}
+
+.row.no-gutter {
+	margin-left: 0;
+	margin-right: 0;
+
+	> [class^="col-"] {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+@media screen and (min-width: $grid-breakpoint-xs) { //can't be used on small displays due to small container padding
+	.row.wide-gutter {
+		margin-left: -($grid-wide-gutter);
+		margin-right: -($grid-wide-gutter);
+		
+		> [class^="col-"] {
+			padding-left: $grid-wide-gutter;
+			padding-right: $grid-wide-gutter;
+		}
+	}
+}
+
+.row.narrow-gutter {
+	margin-left: -($grid-narrow-gutter);
+	margin-right: -($grid-narrow-gutter);
+
+	> [class^="col-"] {
+		padding-left: ($grid-narrow-gutter);
+		padding-right: ($grid-narrow-gutter);
+	}
+}
+
+.row.mini-gutter {
+	margin-left: -2px;
+	margin-right: -2px;
+
+	> [class^="col-"] {
+		padding-left: 2px;
+		padding-right: 2px;
+	}
+}
+
+//#Grid alignment
+.row-center {
+	justify-content: center;
+}
+
+.row-right {
+	justify-content: flex-end;
+}
+
+//#grid wrap
+.row-nowrap{
+	flex-wrap: nowrap;
+}
+
+//#Grid columns
+//-------------
+
+.col-fluid {
+	flex: 1 1 0px;
+	width: auto;
+}
+
+.col-auto {
+	flex: 0 1 auto;
+	width: auto;
+}
+
+@for $i from 1 through $grid-total-columns {
+	.col-#{$i} {
+		width: percentage($i / $grid-total-columns);
+	}
+}
+
+//XS colum definition
+@media screen and (min-width: $grid-breakpoint-xs) {
+	@for $i from 1 through $grid-total-columns {
+		.col-xs-#{$i} {
+			flex: 0 1 auto;
+			width: percentage($i / $grid-total-columns);
+		}
+	}
+	.col-xs-fluid {
+		flex: 1 1 0px;
+		width: auto;
+	}
+	.col-xs-auto {
+		width: auto;
+	}
+}
+
+//SM colum definition
+@media screen and (min-width: $grid-breakpoint-sm) {
+	@for $i from 1 through $grid-total-columns {
+		.col-sm-#{$i} { 
+			flex: 0 1 auto;
+			width: percentage($i / $grid-total-columns);
+		}
+	}
+	.col-sm-fluid {
+		flex: 1 1 0px;
+		width: auto;
+	}
+	.col-sm-auto {
+		width: auto;
+	}
+}
+
+//MD colum definition
+@media screen and (min-width: $grid-breakpoint-md) {
+	@for $i from 1 through $grid-total-columns {
+		.col-md-#{$i} {
+			flex: 0 1 auto;
+			width: percentage($i / $grid-total-columns);
+		}
+	}
+	.col-md-fluid {
+		flex: 1 1 0px;
+		width: auto;
+	}
+	.col-md-auto {
+		width: auto;
+	}
+}
+
+//LG colum definition
+@media screen and (min-width: $grid-breakpoint-lg) {
+	@for $i from 1 through $grid-total-columns {
+		.col-lg-#{$i} {
+			flex: 0 1 auto;
+			width: percentage($i / $grid-total-columns);
+		}
+	}
+	.col-lg-fluid {
+		flex: 1 1 0px;
+		width: auto;
+	}
+	.col-lg-auto {
+		width: auto;
+	}
+}
+
+// Equalize height of column content
+.col-equalise {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: stretch;
+}
+
+.col-equalise > * {
+	flex: 1 0 auto;
+}
+
+// Grid alignment
+.col-right {
+	text-align: right; 
+}
+
+.col-left {
+	text-align: left;
+}
+
+.col-center {
+	text-align: center;
+}
+
+.col-top {
+	align-self: flex-start;
+}
+
+.col-middle {
+	align-self: center;
+}
+
+.col-bottom {
+	align-self: flex-end;
+}

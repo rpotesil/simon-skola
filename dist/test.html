@@ -1,0 +1,67 @@
+<html>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <script>
+        // Get the canvas element
+var canvas = document.getElementById('myCanvas');
+var context = canvas.getContext('2d');
+
+// Set up touch event listeners
+canvas.addEventListener('touchstart', handleTouchStart, false);
+canvas.addEventListener('touchmove', handleTouchMove, false);
+canvas.addEventListener('touchend', handleTouchEnd, false);
+
+// Variables to store touch information
+var touchX, touchY;
+var isDrawing = false;
+
+// Handle touch start event
+function handleTouchStart(event) {
+  event.preventDefault();
+  isDrawing = true;
+
+  // Get the touch coordinates
+  var touch = event.touches[0];
+  touchX = touch.pageX - canvas.offsetLeft;
+  touchY = touch.pageY - canvas.offsetTop;
+
+  // Draw the initial circle
+  drawCircle(touchX, touchY);
+}
+
+// Handle touch move event
+function handleTouchMove(event) {
+  event.preventDefault();
+  if (isDrawing) {
+    // Get the touch coordinates
+    var touch = event.touches[0];
+    touchX = touch.pageX - canvas.offsetLeft;
+    touchY = touch.pageY - canvas.offsetTop;
+
+    // Clear the canvas and draw the updated circle
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    drawCircle(touchX, touchY);
+  }
+}
+
+// Handle touch end event
+function handleTouchEnd(event) {
+  event.preventDefault();
+  isDrawing = false;
+
+  // Clear the canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// Function to draw a circle at the specified coordinates
+function drawCircle(x, y) {
+  context.beginPath();
+  context.arc(x, y, 20, 0, 2 * Math.PI, false);
+  context.fillStyle = 'red';
+  context.fill();
+  context.lineWidth = 2;
+  context.strokeStyle = 'black';
+  context.stroke();
+}
+
+    </script>
+</html>

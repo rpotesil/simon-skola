@@ -1,0 +1,38 @@
+.action-response {
+    
+    opacity: 0;
+    transition: 600ms opacity ease-in-out;
+
+    &.is-open {
+        opacity: 1;
+        
+    }
+    .ar-is {
+        padding: 0 0 32px 0;
+    }
+    
+    .ar-error {
+        border: 1px solid #e49a9a;
+        background: #fef4f3;
+        color: #b34e47;
+        padding: 20px;
+        border-radius: 4px;
+    }
+    .ar-success {
+        border: 1px solid #a9e49a;
+        background: #f3fef3;
+        color: #84b347;
+        padding: 20px;
+        border-radius: 4px;
+    }
+
+    &:focus {
+        outline: none;
+        .ar-error {
+            box-shadow: 0 0 0 2px rgba(#b34e47, 0.12);
+        }
+        .ar-success {
+            box-shadow: 0 0 0 2px rgba(#84b347, 0.12);
+        }
+    }
+}

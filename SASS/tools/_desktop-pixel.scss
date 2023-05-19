@@ -1,0 +1,37 @@
+//
+// Mobile scaling
+// Use px() function to define dimensions in pixels and let preprocessor recalculate to REMs.
+// Once all dimensions are relative you can setup scaling down for mobiles
+// e.g. font size 20px on desktop will become 18px o mobile in case the scaling is 90%.
+//
+
+//Set default pixel size
+html
+{
+    //font-size: 16px;
+}
+
+//Decrease default pixel size as the resolution goes down
+$dpx-scale: 80; //%
+$dpx-size-counter: 16; //px
+$dpx-resolution-counter: 1000; //px
+$dpx-resolution-min: 320; //px
+$dpx-number-of-steps: 5;
+$dpx-resolution-decrement: ($dpx-resolution-counter - $dpx-resolution-min) / $dpx-number-of-steps;
+$dpx-size-min: $dpx-size-counter * ($dpx-scale / 100);
+$dpx-size-decrement: ($dpx-size-counter - $dpx-size-min) / $dpx-number-of-steps;
+@for $i from 1 through $dpx-number-of-steps {
+    $dpx-resolution-counter: $dpx-resolution-counter - $dpx-resolution-decrement;
+    $dpx-size-counter: $dpx-size-counter - $dpx-size-decrement;
+    // @media screen and (max-width: #{$dpx-resolution-counter}px){
+    //  html{
+    //      font-size: #{round($dpx-size-counter)}px;
+    //  }
+    // }
+}
+
+//Set font size, width, line-height etc. in pixels according how it should appear on desktop device, i.e. padding: dpx(36);
+@function dpx($pixels){
+  $rems-in-pixel: 0.0625; //Rem to pixels ratio considering the root font-size (<html>) is 16px (browser default)
+  @return #{$pixels * $rems-in-pixel}rem;
+}
