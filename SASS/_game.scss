@@ -3,12 +3,13 @@
     animation-duration: 1s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
+    box-shadow: 0 0 0 3px rgba($left-bg, 0.5);
 }
 
 /* game */
 .answer {
     // background-image: url("asset/guess.png");
-    background: #0a5bd4;
+    background: $left-bg;
     // border-radius: 48px;
     height: 100px;
     width: 300px;
@@ -20,7 +21,8 @@
     font-size: 26px;
     position: relative;
     border-radius: 28px;
-    
+    box-shadow: 0 0 0 3px rgba($left-bg, 0);
+
     .text {
         pointer-events: none;
     }
@@ -32,41 +34,41 @@
     .rknot {
         display: block;
         position: absolute;
-        left: 0;
-        top: 50%;
-        background: red;
-        width: 3px;
-        height: 3px;
+        left: -9px;
+        top: calc(50% - 9px);
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: 4px solid $right-bg;
     }
     .lknot {
         display: block;
         position: absolute;
-        right: 0;
-        top: 50%;
-        background: red;
-        width: 3px;
-        height: 3px;
+        right: -9px;
+        top: calc(50% - 9px);
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: 4px solid $left-bg;
     }
 }
 
-@media screen and (max-width: 1100px) {
+.challenge-right .answer {
+    background-color: $right-bg;
+  }
+  
+  
+
+  @media screen and (max-width: 1100px) {
     .answer {
         width: 150px;
         height: 40px;
         padding: 8px 0 0 34px;
         font-size: 16px;
-        .audio-play {
-            left: 0px;
-            top: 0px;
-        }
+  
     }
-    // .app {
-    //     background: red;
-    //     width: 1024px;
-    //     height: 768px;
 
-    // }
-}
+  }
 
 .game-svg {
     position: absolute;
@@ -81,7 +83,7 @@
         transform: scale(1);
     }
     50% {
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
     100% {
         transform: scale(1);
