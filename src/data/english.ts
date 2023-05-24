@@ -24,7 +24,7 @@ export const learnData = [
     { "id": "hen", "en": "Hen", "cs": "Slepice" },
     { "id": "kitchen", "en": "Kitchen", "cs": "Kuchyně" },
     { "id": "lion", "en": "Lion", "cs": "Lev" },
-    { "id": "livingRoom", "en": "Living Room", "cs": "Obývací pokoj" },
+    { "id": "livingroom", "en": "Living Room", "cs": "Obývací pokoj" },
     { "id": "mouse", "en": "Mouse", "cs": "Myš" },
     { "id": "monday", "en": "Monday", "cs": "Pondělí" },
     { "id": "pig", "en": "Pig", "cs": "Prase" },

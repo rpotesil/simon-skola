@@ -1,5 +1,5 @@
 export const ed = (selector: string):any => {
-    return document.getElementById("#" + selector);
+    return document.getElementById(selector);
 }
 
 export const ec = (selector: string, node: any = null) => {

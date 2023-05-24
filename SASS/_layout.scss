@@ -1,8 +1,16 @@
 .challenge {
   height: 100vh;
+  transition: 500ms filter $motion-in-out, 500ms opacity $motion-in-out;
+  // filter: blur(0);
+  &.evaluating .answer .bubble {
+      background: #170D3D;
+  }
+  &.evaluating .answer .knot {
+      // border-color: #170D3D;
+  }
 }
 .challenge-inner {
-  padding: 24px;
+  padding: 12px;
   background: rgba(#000, 0);
   max-width: 1024px;
   margin: auto;
@@ -26,34 +34,25 @@
 .challenge-duo {
   display: flex;
   justify-content: space-between;
+
 }
 .challenge-left {
   // padding: 0 250px 0 0;
 }
-// .guessbox {
-//       width: 200px;
-//     height: 70px;
-//     background-color: #ccc;
-//     border: 1px solid #333;
-// }
+
 
 body {
-  background: #d9f0ff;
+  overflow: hidden;
+  background: url('./asset/menu-bg.png');
+  color: #fff;
 }
 
 .app {
+  // background: #d9f0ff;
   // width: 1000px;
   // height: 720px;
   box-sizing: border-box;
   width: 100%;
-  height: 100%;
-  // background: url(asset/menubg.jpg);
-  position: relative;
+
 }
 
-.game-screen {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}

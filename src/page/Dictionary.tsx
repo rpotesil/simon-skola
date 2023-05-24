@@ -19,7 +19,7 @@ export const Dictionary: any = () => {
                     return (
                         <div key={o.cs} className="item">
                             <audio id={`csaudio${o.id}`} controls={false} autoPlay={false}>
-                                <source src={`./asset/${o.id}-cs.mp3`} type="audio/mpeg" />
+                                <source src={`./asset/cs/${o.id}-cs.mp3`} type="audio/mpeg" />
                             </audio>
                             <button type="button" onClick={() => onPlay(o, "cs")} className="audio-play icon-play"></button>
                             <span className="text">{o.cs}</span>
@@ -32,7 +32,7 @@ export const Dictionary: any = () => {
                     return (
                         <div key={o.en} className="item">
                             <audio id={`enaudio${o.id}`} controls={false} autoPlay={false}>
-                                <source src={`./asset/${o.id}.mp3`} type="audio/mpeg" />
+                                <source src={`./asset/en/${o.id}.mp3`} type="audio/mpeg" />
                             </audio>
                             <button type="button" onClick={() => onPlay(o, "en")} className="audio-play icon-play"></button>
                             <span className="text">{o.en}</span>

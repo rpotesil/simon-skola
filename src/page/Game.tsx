@@ -1,16 +1,19 @@
-import React, { useEffect, useRef, useState } from "react"
-import { learnData } from "../data/english";
-import { Link } from "react-router-dom";
-import { ed, eq } from "../helpers/dom";
 import classNames from "classnames";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { learnData } from "../data/english";
+import { ed, eq } from "../helpers/dom";
 import { shuffleArray } from "../helpers/shuffleArray";
 
 
 
 
-export const Game = () => {
+export const Game = (props: any) => {
+    const { round, onSuccess, maxRounds } = props;
     // const answerWidth = 300;
     // const answerHeight = 100;
+    const [evaluating, setEvaluating] = useState(false);
+    const [showEval, setShowEval] = useState<null | "fail" | "success">(null);
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [info, setInfo] = useState("");
@@ -28,6 +31,29 @@ export const Game = () => {
     const [startIndex, setStartIndex] = useState<null | number>(null);
     const [endIndex, setEndIndex] = useState<null | number>(null);
     const [connections, setConnections] = useState([]);
+
+    const testConnections = () => {
+        if (questions.length !== answers.length) return false;
+        for (const connection of connections) {
+            const fromIndex = connection.from - 1; // Adjusting for zero-based index
+            const toIndex = connection.to - 1; // Adjusting for zero-based index
+
+            if (fromIndex < 0 || fromIndex >= questions.length || toIndex < 0 || toIndex >= answers.length) {
+                // Invalid index in connections array
+                return false;
+            }
+
+            const fromWord = questions[fromIndex];
+            const toWord = answers[toIndex];
+
+            if (fromWord !== toWord) {
+                // Words don't match for the given connection
+                return false;
+            }
+        }
+        return true;
+    }
+
     useEffect(() => {
         var randomIds = [];
         const learnDataCopy = [...learnData]; // Create a copy of the original array to avoid modifying it
@@ -61,6 +87,7 @@ export const Game = () => {
         setStartSide(null);
         setEndSide(null);
         connectRef.current.play();
+        if (newConnections.length == 3) onSubmit();
     }
 
     const getKnobPosition = (side: string, index: number) => {
@@ -76,6 +103,8 @@ export const Game = () => {
         let side = e.target.dataset.side;
         let index = e.target.dataset.index;
         if (!side) return; //click into free space
+        if (side == "left") ed(`enaudio${index}`).play();
+        if (side == "right") ed(`csaudio${index}`).play();
         if (startSide == null) {
             setStartSide(side);
             setStartIndex(index);
@@ -83,6 +112,11 @@ export const Game = () => {
             return;
         }
     }
+
+    useEffect(() => {
+        if (endSide == "left") ed(`enaudio${endIndex}`).play();
+        if (endSide == "right") ed(`csaudio${endIndex}`).play();
+    }, [endSide, endIndex]);
 
     const onMouseMove = (e: any) => {
         if (!dragging) return;
@@ -111,7 +145,7 @@ export const Game = () => {
     }
 
     const onMouseUp = (e: any) => {
-        console.log("Canvas Mouse up");
+
         pathRef.current.setAttribute("d", "");
 
         setDragging(false);
@@ -123,14 +157,33 @@ export const Game = () => {
                 setEndSide(null);
             }
         }
-        if(startSide) {
-            if( e.target.dataset.side == startSide) {
-                setStartSide(null);
-            }
+        if (startSide && !endSide) {
+            // if (e.target.dataset.side == startSide) {
+            setStartSide(null);
+            // }
         }
     }
 
-    const onSubmit = (e: any) => {
+    const onSubmit = () => {
+        setEvaluating(true);
+        setTimeout(() => {
+            if (testConnections()) {
+                successRef.current.play();
+                setShowEval("success");
+                setTimeout(() => {
+                    onSuccess();
+                }, 3500);
+            } else {
+                failRef.current.play();
+                setShowEval("fail");
+                setTimeout(() => {
+                    setShowEval(null);
+                    setConnections([]);
+                    setEvaluating(false);
+                }, 3500);
+            }
+        }, 500);
+
         console.log(questions, answers);
     }
 
@@ -143,9 +196,14 @@ export const Game = () => {
     //     let aud: any = document.getElementById(lang + "audio" + o.id);
     //     aud.play();
     // }
+    // let [vw, vh] = useViewport();
 
+    // <div className="game-screen" style={{ height: `${vh - 0}px` }}>
     return (
         <div className="game-screen">
+            {showEval == "fail" && <div className="cross"></div>}
+            {showEval == "success" && <div className="tick"></div>}
+
             <audio ref={connectRef} controls={false} autoPlay={false}>
                 <source src={`./asset/connect.mp3`} type="audio/mpeg" />
             </audio>
@@ -155,7 +213,8 @@ export const Game = () => {
             <audio ref={failRef} controls={false} autoPlay={false}>
                 <source src={`./asset/fail.mp3`} type="audio/mpeg" />
             </audio>
-            <div className="game-top-left">
+            {/* <div className="game-top-left">
+                Height: {vh}
 
                 <div>{dragging ? "Dragging" : "-"}</div>
                 <div>S{startSide}{startIndex} To E{endSide}{endIndex}, INFO {info}</div>
@@ -166,24 +225,26 @@ export const Game = () => {
                         )
                     })
                 }
-            </div>
-            <Link to="/" className="menu-close icon-close" aria-label="Back"></Link>
-            <svg className="game-svg" ref={svgRef}>
-                <path id="path" stroke="#333" ref={pathRef} stroke-width="7" fill="none" />
+            </div> */}
+           
+            <svg
+                className={classNames("game-svg", { "evaluating": evaluating })}
+                ref={svgRef}>
+                <path id="path" stroke="#fff" ref={pathRef} strokeWidth="7" fill="none" />
                 {
                     connections.map(o => {
-                        const [sx, sy] =  getKnobPosition("left", o.from);
-                        const [ex, ey] =  getKnobPosition("right", o.to);
+                        const [sx, sy] = getKnobPosition("left", o.from);
+                        const [ex, ey] = getKnobPosition("right", o.to);
                         let d = "M" + sx + "," + sy + " L" + ex + "," + ey;
                         return (
-                            <path id="path" stroke="#999" d={d} stroke-width="5" fill="none" />
+                            <path id="path" stroke="#ccc" d={d} strokeWidth="5" fill="none" />
                         )
                     })
                 }
 
             </svg>
             <div
-                className="challenge"
+                className={classNames("challenge", { "evaluating": evaluating })}
                 // onAnswerMouseDown={onAnswerMouseDown}
                 onMouseDown={onMouseDown}
                 onTouchStart={onMouseDown}
@@ -193,7 +254,10 @@ export const Game = () => {
                 onTouchEnd={onMouseUp}
             >
                 <div className="challenge-inner">
-                    <div className="challenge-duo">
+                    <div className="game-round">Kolo {round}/{maxRounds}</div>
+
+                    <div
+                        className={classNames("challenge-duo")}>
                         <div className="challenge-left">
                             {questions.map((o, key) => {
                                 let index = key + 1;
@@ -210,11 +274,13 @@ export const Game = () => {
                                         data-side="left"
                                         data-operation={`enword${index}`}
                                     >
-                                        <span className="lknot" id={`leftknot${index}`}></span>
-                                        <audio id={`enaudio${item.id}`} controls={false} autoPlay={false}>
-                                            <source src={`./asset/${item.id}.mp3`} type="audio/mpeg" />
+                                        <audio id={`enaudio${index}`} controls={false} autoPlay={false}>
+                                            <source src={`./asset/en/${item.id}.mp3`} type="audio/mpeg" />
                                         </audio>
-                                        <span className="text">{item.en}</span>
+                                        <div className="bubble">
+                                            <span className="lknot knot" id={`leftknot${index}`}></span>
+                                            <span className="text">{item.en}</span>
+                                        </div>
                                     </div>
                                 )
                             })}
@@ -235,17 +301,19 @@ export const Game = () => {
                                         data-side="right"
                                         data-operation={`csword${index}`}
                                     >
-                                        <span className="rknot" id={`rightknot${index}`}></span>
-                                        <audio id={`csaudio${item.id}`} controls={false} autoPlay={false}>
-                                            <source src={`./asset/${item.id}-cs.mp3`} type="audio/mpeg" />
+                                        <audio id={`csaudio${index}`} controls={false} autoPlay={false}>
+                                            <source src={`./asset/cs/${item.id}-cs.mp3`} type="audio/mpeg" />
                                         </audio>
-                                        <span className="text">{item.cs}</span>
+                                        <div className="bubble">
+                                            <span className="rknot knot" id={`rightknot${index}`}></span>
+                                            <span className="text">{item.cs}</span>
+                                        </div>
                                     </div>
                                 )
                             })}
                         </div>
                     </div>
-                    {/* <button type="button" onClick={onSubmit}>Další úkol</button> */}
+
                 </div>
             </div>
 

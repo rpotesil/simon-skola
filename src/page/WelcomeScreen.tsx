@@ -1,33 +1,34 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { toggleFullScreen } from "../helpers/toggleFullscreen"
 
 
 
 export const WelcomeScreen: any = () => {
-    function toggleFullScreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
-    return (
-        <div className="challenge">
-            <div className="challenge-inner">
-                <div className="ch-top-right">
-                    <button className="menu-button icon-dots" aria-label="Fullscreen" onClick={toggleFullScreen}></button>
-                </div>
-                <ul className="menu">
-                    <li>
-                        <Link to="/game" className="menu-cta">Start</Link>
-                    </li>
-                    <li>
-                        <Link to="/dictionary" className="menu-cta">Slovník</Link>
-                    </li>
-                </ul>
 
-                <img src="./asset/app-qr.svg" width={200} height={200} />
+    return (
+        <>
+            <div className="game-top-right">
+                <button className="menu-button icon-fullscreen" aria-label="Fullscreen" onClick={toggleFullScreen}></button>
             </div>
-        </div>
+
+            <div className="challenge text-center">
+                <div className="challenge-inner">
+
+                    <h1 className="menu-title">Angličtina 1.B.</h1>
+                    <ul className="menu-list">
+                        <li>
+                            <Link to="/game" className="menu-cta">Hrát</Link>
+                        </li>
+                        <li>
+                            <Link to="/dictionary" className="menu-cta2">Slovník</Link>
+                        </li>
+                    </ul>
+                    <div className="pb-48">
+                        <img src="./asset/app-qr.svg" width={200} height={200} />
+                    </div>
+                </div>
+            </div>
+        </>
     )
 }

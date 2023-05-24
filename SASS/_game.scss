@@ -1,4 +1,13 @@
-.answer.is-pulsing {
+.game-screen {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    // border: 3px solid blue;
+    position: relative;
+}
+
+.answer.is-pulsing .bubble{
     animation-name: pulse;
     animation-duration: 1s;
     animation-iteration-count: infinite;
@@ -9,28 +18,38 @@
 /* game */
 .answer {
     // background-image: url("asset/guess.png");
-    background: $left-bg;
+    // background: #fafafa;
     // border-radius: 48px;
     height: 100px;
     width: 300px;
     margin: 0 0 48px 0;
     text-align: center;
-    padding: 34px 0 0 0;
-    box-sizing: border-box;
-    color: #fff;
-    font-size: 26px;
+    padding: 12px;
     position: relative;
-    border-radius: 28px;
-    box-shadow: 0 0 0 3px rgba($left-bg, 0);
-
-    .text {
+    font-size: 26px;
+    color: #fff;
+    
+    
+    
+    .bubble {
+        position: relative;
+        display: block;
+        background: $left-bg;
         pointer-events: none;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 28px;
+        box-shadow: 0 0 0 3px rgba($left-bg, 0);
+        transition: 300ms background $motion-in-out;
+        // animation: 300ms scalein $motion-in-out;
     }
-    .audio-play {
-        position: absolute;
-        left: 32px;
-        top: 26px;
-    }
+    // .audio-play {
+    //     position: absolute;
+    //     left: 32px;
+    //     top: 26px;
+    // }
     .rknot {
         display: block;
         position: absolute;
@@ -40,6 +59,7 @@
         height: 9px;
         border-radius: 50%;
         border: 4px solid $right-bg;
+        pointer-events: none;
     }
     .lknot {
         display: block;
@@ -50,25 +70,22 @@
         height: 9px;
         border-radius: 50%;
         border: 4px solid $left-bg;
+        pointer-events: none;
     }
 }
 
-.challenge-right .answer {
+.challenge-right .answer .bubble {
     background-color: $right-bg;
-  }
-  
-  
+}
 
-  @media screen and (max-width: 1100px) {
+@media screen and (max-width: 1100px) {
     .answer {
         width: 150px;
-        height: 40px;
-        padding: 8px 0 0 34px;
+        height: 80px;
+        box-sizing: border-box;
         font-size: 16px;
-  
     }
-
-  }
+}
 
 .game-svg {
     position: absolute;
@@ -76,6 +93,7 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+
 }
 
 @keyframes pulse {
@@ -90,8 +108,129 @@
     }
 }
 
+.game-top-right {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 30;
+}
 .game-top-left {
     position: absolute;
     top: 24px;
     left: 24px;
+    z-index: 30;
+}
+.game-bottom-right {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    z-index: 30;
+}
+
+.cross {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    z-index: 50;
+    top: calc(50% - 100px);
+    left: calc(50% - 100px);
+    animation: 3000ms crossin linear;
+    animation-fill-mode: forwards;
+    background: #170D3D;
+    box-shadow: 0 0 20px 100px #170D3D;
+    border-radius: 100px;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        background-color: #e21010;
+        // box-shadow: 0 0 20px red;
+    }
+
+    &::before {
+        width: 100%;
+        height: 50px;
+        top: 75px;
+        left: 0;
+        transform: rotate(45deg);
+    }
+
+    &::after {
+        width: 50px;
+        height: 100%;
+        top: 0;
+        left: 75px;
+        transform: rotate(45deg);
+    }
+}
+
+@keyframes crossin {
+    0% {
+        transform: scale(0);
+    }
+    5% {
+        transform: scale(1.2);
+    }
+    7% {
+        transform: scale(0.9);
+    }
+    9% {
+        transform: scale(1);
+    }
+    94% {
+        transform: scale(1);
+    }
+    95% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+
+.tick {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    z-index: 50;
+    top: calc(50% - 100px);
+    left: calc(50% - 100px);
+    animation: 3000ms crossin linear;
+    animation-fill-mode: forwards;
+    background: #170D3D;
+    box-shadow: 0 0 20px 100px #170D3D;
+    border-radius: 100px;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        background-color: #039166;
+    }
+
+    &::before {
+        width: 50px;
+        height: 90px;
+        top: 130px;
+        left: -10px;
+        transform: rotate(-45deg);
+        transform-origin: 0 0;
+    }
+
+    &::after {
+        width: 50px;
+        height: 220px;
+        top: 10px;
+        left: 181px;
+        transform: rotate(45deg);
+        transform-origin: 0 0;
+    }
+}
+
+.game-round {
+    text-align: center;
+    font-size: 34px;
+    font-weight: bold;
+    margin: 0 0 12px 0;
 }
