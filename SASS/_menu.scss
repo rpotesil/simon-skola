@@ -1,4 +1,6 @@
 .menu-cta {
+	width: 100%;
+	box-sizing: border-box;
 	background-color: orange;
 	color: white;
 	border: none;
@@ -14,6 +16,8 @@
 }
 
 .menu-cta2 {
+	width: 100%;
+	box-sizing: border-box;
 	padding: 10px 20px;
 	border-radius: 5px;
 	font-size: 20px;
@@ -58,10 +62,16 @@
 	text-shadow: 2px 2px 0 #161616;
 }
 
+button.menu-button {
+	cursor: pointer;
+	opacity: 1;
+}
+
 .menu-button {
 	@include button-reset;
-	cursor: pointer;
+	cursor: default;
 	display: inline-block;
+	opacity: 0.1;
 	padding: 0;
 	width: 48px;
 	height: 48px;
@@ -73,6 +83,10 @@
 		@include icomoon;
 		line-height: 48px;
 	}
+}
+
+.menu-button + .menu-button {
+	margin: 0 0 0 24px;
 }
 
 .menu-list {
@@ -123,5 +137,9 @@
 	&:active:after {
 		opacity: 0.3;
 		transform: scale(1);
+	}
+
+	&:disabled {
+		opacity: 0.15;
 	}
 }

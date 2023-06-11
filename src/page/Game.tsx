@@ -16,21 +16,25 @@ export const Game = (props: any) => {
     const [showEval, setShowEval] = useState<null | "fail" | "success">(null);
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
-    const [info, setInfo] = useState("");
-    const [startX, setStartX] = useState(0);
-    const [startY, setStartY] = useState(0);
+    // const [info, setInfo] = useState("");
+
+    // const [startX, setStartX] = useState(0);
+    // const [startY, setStartY] = useState(0);
+
     const [dragging, setDragging] = useState(false);
     const connectRef = useRef<any>();
     const successRef = useRef<any>();
     const failRef = useRef<any>();
     const svgRef = useRef<any>();
     const pathRef = useRef<SVGPathElement>();
-    const [mouseX, setMouseX] = useState(0);
+    // const [mouseX, setMouseX] = useState(0);
     const [startSide, setStartSide] = useState<null | "left" | "right">(null);
     const [endSide, setEndSide] = useState<null | "left" | "right">(null);
     const [startIndex, setStartIndex] = useState<null | number>(null);
     const [endIndex, setEndIndex] = useState<null | number>(null);
     const [connections, setConnections] = useState([]);
+    // const [answerSounds, setAnswerSounds] = useState([]);
+    const [eligiblePoints, setEligiblePoints] = useState(3);
 
     const testConnections = () => {
         if (questions.length !== answers.length) return false;
@@ -67,6 +71,16 @@ export const Game = (props: any) => {
         }
         setQuestions(randomIds);
         setAnswers(shuffleArray([...randomIds]));
+
+        // let sounds = randomIds.map(o => {
+        //     let item = learnData.filter(l => l.id == o)[0];
+        //     return new Audio('./asset/cs/' + item.id + '-cs.mp3');
+        // });
+        // for(let i=0; i<randomIds.length; i++) {
+
+        // }
+        // setAnswerSounds(sounds);
+
         // const questions = getRandomIds(learnData);
 
     }, []);
@@ -105,6 +119,7 @@ export const Game = (props: any) => {
         if (!side) return; //click into free space
         if (side == "left") ed(`enaudio${index}`).play();
         if (side == "right") ed(`csaudio${index}`).play();
+        // if (side == "right") answerSounds[index].play();
         if (startSide == null) {
             setStartSide(side);
             setStartIndex(index);
@@ -166,23 +181,24 @@ export const Game = (props: any) => {
 
     const onSubmit = () => {
         setEvaluating(true);
-        setTimeout(() => {
-            if (testConnections()) {
-                successRef.current.play();
-                setShowEval("success");
-                setTimeout(() => {
-                    onSuccess();
-                }, 3500);
-            } else {
-                failRef.current.play();
-                setShowEval("fail");
-                setTimeout(() => {
-                    setShowEval(null);
-                    setConnections([]);
-                    setEvaluating(false);
-                }, 3500);
-            }
-        }, 500);
+
+        if (testConnections()) {
+            successRef.current.play();
+            setShowEval("success");
+            setTimeout(() => {
+                onSuccess(eligiblePoints);
+            }, 2500);
+        } else {
+            failRef.current.play();
+            setShowEval("fail");
+            setEligiblePoints(eligiblePoints > 0 ? eligiblePoints - 1 : 0);
+            setTimeout(() => {
+                setShowEval(null);
+                setConnections([]);
+                setEvaluating(false);
+            }, 2500);
+        }
+
 
         console.log(questions, answers);
     }
@@ -192,9 +208,12 @@ export const Game = (props: any) => {
         pathRef.current.setAttribute("d", d);
     }
 
-    // const onPlay = (o: any, lang: string) => {
-    //     let aud: any = document.getElementById(lang + "audio" + o.id);
+    // const onPlay = (id: string) => {
+    //     let aud: any = document.getElementById(id);
     //     aud.play();
+    // }
+    // const apinPlay = (index: number) => {
+    //     answerSounds[index].play();
     // }
     // let [vw, vh] = useViewport();
 
@@ -202,15 +221,20 @@ export const Game = (props: any) => {
     return (
         <div className="game-screen">
             {showEval == "fail" && <div className="cross"></div>}
-            {showEval == "success" && <div className="tick"></div>}
+            {showEval == "success" && <div className="tick">
+                <div className="t-stars">
+                    {[...Array(eligiblePoints)].map((e, i) => <div key={i} className={"t-star icon icon-star sa d" + (i + 5)}></div>)}
+                </div>
+            </div>
+            }
 
-            <audio ref={connectRef} controls={false} autoPlay={false}>
+            <audio ref={connectRef} controls={false} autoPlay={false} preload="true">
                 <source src={`./asset/connect.mp3`} type="audio/mpeg" />
             </audio>
-            <audio ref={successRef} controls={false} autoPlay={false}>
+            <audio ref={successRef} controls={false} autoPlay={false} preload="true">
                 <source src={`./asset/success.mp3`} type="audio/mpeg" />
             </audio>
-            <audio ref={failRef} controls={false} autoPlay={false}>
+            <audio ref={failRef} controls={false} autoPlay={false} preload="true">
                 <source src={`./asset/fail.mp3`} type="audio/mpeg" />
             </audio>
             {/* <div className="game-top-left">
@@ -226,18 +250,18 @@ export const Game = (props: any) => {
                     })
                 }
             </div> */}
-           
+
             <svg
                 className={classNames("game-svg", { "evaluating": evaluating })}
                 ref={svgRef}>
                 <path id="path" stroke="#fff" ref={pathRef} strokeWidth="7" fill="none" />
                 {
-                    connections.map(o => {
+                    connections.map((o, index) => {
                         const [sx, sy] = getKnobPosition("left", o.from);
                         const [ex, ey] = getKnobPosition("right", o.to);
                         let d = "M" + sx + "," + sy + " L" + ex + "," + ey;
                         return (
-                            <path id="path" stroke="#ccc" d={d} strokeWidth="5" fill="none" />
+                            <path key={index} id="path" stroke="#ccc" d={d} strokeWidth="5" fill="none" />
                         )
                     })
                 }
@@ -254,7 +278,10 @@ export const Game = (props: any) => {
                 onTouchEnd={onMouseUp}
             >
                 <div className="challenge-inner">
-                    <div className="game-round">Kolo {round}/{maxRounds}</div>
+
+                    <div className="game-round">
+                        {[...Array(maxRounds)].map((e, i) => <span className={classNames("gr-badge", { "is-done icon icon-check": (i + 1 < round), "is-current": (round == i + 1) })} key={i}><span>{i + 1}</span></span>)}
+                    </div>
 
                     <div
                         className={classNames("challenge-duo")}>
@@ -274,7 +301,7 @@ export const Game = (props: any) => {
                                         data-side="left"
                                         data-operation={`enword${index}`}
                                     >
-                                        <audio id={`enaudio${index}`} controls={false} autoPlay={false}>
+                                        <audio id={`enaudio${index}`} controls={false} autoPlay={false} preload="true">
                                             <source src={`./asset/en/${item.id}.mp3`} type="audio/mpeg" />
                                         </audio>
                                         <div className="bubble">
@@ -301,9 +328,11 @@ export const Game = (props: any) => {
                                         data-side="right"
                                         data-operation={`csword${index}`}
                                     >
-                                        <audio id={`csaudio${index}`} controls={false} autoPlay={false}>
+                                        <audio className="audio" id={`csaudio${index}`} controls={false} autoPlay={false} preload="true">
                                             <source src={`./asset/cs/${item.id}-cs.mp3`} type="audio/mpeg" />
                                         </audio>
+                                        {/* <button onClick={() => onPlay(`csaudio${index}`)}>PLAY</button>
+                                        <button onClick={() => apinPlay(index)}>APIPLAY</button> */}
                                         <div className="bubble">
                                             <span className="rknot knot" id={`rightknot${index}`}></span>
                                             <span className="text">{item.cs}</span>

@@ -1,0 +1,33 @@
+.dict-item {
+    border-bottom: 1px solid rgba(#fff, 0.15);
+    display: flex;
+    font-size: 20px;
+}
+
+.di-num {
+    flex: 0 0 auto;
+    font-size: 12px;
+    width: 30px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.di-left {
+    width: calc(50% - 30px);
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+}
+.di-right {
+    width: calc(50% - 30px);
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+}
+
+.di-text {
+    padding: 0 0 0 8px;
+    // font-size: 20px;
+}

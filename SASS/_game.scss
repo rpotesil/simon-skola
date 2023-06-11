@@ -7,7 +7,7 @@
     position: relative;
 }
 
-.answer.is-pulsing .bubble{
+.answer.is-pulsing .bubble {
     animation-name: pulse;
     animation-duration: 1s;
     animation-iteration-count: infinite;
@@ -20,17 +20,18 @@
     // background-image: url("asset/guess.png");
     // background: #fafafa;
     // border-radius: 48px;
-    height: 100px;
+    height: 120px;
     width: 300px;
-    margin: 0 0 48px 0;
+    // height: 80px;
+    box-sizing: border-box;
+
+    margin: 48px 0 48px 0;
     text-align: center;
     padding: 12px;
     position: relative;
     font-size: 26px;
     color: #fff;
-    
-    
-    
+
     .bubble {
         position: relative;
         display: block;
@@ -81,8 +82,6 @@
 @media screen and (max-width: 1100px) {
     .answer {
         width: 150px;
-        height: 80px;
-        box-sizing: border-box;
         font-size: 16px;
     }
 }
@@ -93,7 +92,6 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-
 }
 
 @keyframes pulse {
@@ -113,12 +111,14 @@
     top: 24px;
     right: 24px;
     z-index: 30;
+    background: #190f41;
 }
 .game-top-left {
     position: absolute;
     top: 24px;
     left: 24px;
     z-index: 30;
+    background: #190f41;
 }
 .game-bottom-right {
     position: absolute;
@@ -136,8 +136,8 @@
     left: calc(50% - 100px);
     animation: 3000ms crossin linear;
     animation-fill-mode: forwards;
-    background: #170D3D;
-    box-shadow: 0 0 20px 100px #170D3D;
+    background: #170d3d;
+    box-shadow: 0 0 20px 100px #170d3d;
     border-radius: 100px;
 
     &::before,
@@ -198,8 +198,8 @@
     left: calc(50% - 100px);
     animation: 3000ms crossin linear;
     animation-fill-mode: forwards;
-    background: #170D3D;
-    box-shadow: 0 0 20px 100px #170D3D;
+    background: #170d3d;
+    box-shadow: 0 0 100px 300px #170d3d;
     border-radius: 100px;
 
     &::before,
@@ -207,6 +207,7 @@
         content: "";
         position: absolute;
         background-color: #039166;
+        border-radius: 8px;
     }
 
     &::before {
@@ -228,9 +229,63 @@
     }
 }
 
+.t-stars {
+    // animation: 3000ms crossin linear;
+    // animation-fill-mode: both;
+    // animation-delay: 300ms;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 80px;
+    z-index: 60;
+    color: orange;
+}
+
+.t-star {
+    margin: 0 12px;
+}
+
 .game-round {
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+}
+
+.gr-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 4px;
     text-align: center;
+    border: 1px solid rgba(#fff, 0.5);
+    box-sizing: border-box;
+    color: #fff;
+    line-height: 16px;
+
+    &.is-done {
+        background: rgba(#fff, 0.15);
+        &::before {
+            line-height: 16px;
+        }
+        & > span {
+            display: none;
+        }
+    }
+
+    &.is-current {
+        background: rgba(#fff, 0.15);
+        // &:before {
+        //     content: "?";
+        //     line-height: 16px;
+        // }
+    }
+}
+
+.game-score {
     font-size: 34px;
-    font-weight: bold;
-    margin: 0 0 12px 0;
 }

@@ -47,5 +47,12 @@ export const learnData = [
     { "id": "trousers", "en": "Trousers", "cs": "Kalhoty" },
     { "id": "wednesday", "en": "Wednesday", "cs": "Středa" },
     { "id": "windy", "en": "Windy", "cs": "Větrno" },
-    { "id": "winter", "en": "Winter", "cs": "Zima" }
+    { "id": "winter", "en": "Winter", "cs": "Zima" },    
+    { "id": "swim", "en": "Swim", "cs": "Plavat" },
+    { "id": "bike", "en": "Bike", "cs": "Kolo" },
+    { "id": "hike", "en": "Hike", "cs": "Tůra" },
+    { "id": "camp", "en": "Camp", "cs": "Kempovat" },
+    { "id": "play", "en": "Play", "cs": "Hrát" },
+    { "id": "surf", "en": "Surf", "cs": "Serfovat" },
+    { "id": "dance", "en": "Dance", "cs": "Tancovat" },
 ];
