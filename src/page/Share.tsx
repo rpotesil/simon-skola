@@ -18,7 +18,7 @@ export const Share = (props) => {
                     <div className="pb-0">
                         <img src="./asset/appqr.svg" width={300} height={300} />
                     </div>
-                    <p className="text-lead">www.untitled.cz/p/learn</p>
+                    <p className="text-lead">untitled.cz/learn</p> 
 
                     <ul className="menu-list">
                         <li>

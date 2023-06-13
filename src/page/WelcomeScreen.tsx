@@ -29,6 +29,9 @@ export const WelcomeScreen: any = (props) => {
                         <li>
                             <button onClick={() => setPage("share")} className="menu-cta2">Sdílet</button>
                         </li>
+                        <li>
+                            <button onClick={() => setPage("test")} className="menu-cta2">Test</button>
+                        </li>
                     </ul>
 
                 </div>

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { learnData } from "../data/english";
 import { ed, eq } from "../helpers/dom";
 import { shuffleArray } from "../helpers/shuffleArray";
+import { playSound } from "../start";
 
 
 
@@ -22,9 +23,9 @@ export const Game = (props: any) => {
     // const [startY, setStartY] = useState(0);
 
     const [dragging, setDragging] = useState(false);
-    const connectRef = useRef<any>();
-    const successRef = useRef<any>();
-    const failRef = useRef<any>();
+    // const connectRef = useRef<any>();
+    // const successRef = useRef<any>();
+    // const failRef = useRef<any>();
     const svgRef = useRef<any>();
     const pathRef = useRef<SVGPathElement>();
     // const [mouseX, setMouseX] = useState(0);
@@ -71,18 +72,6 @@ export const Game = (props: any) => {
         }
         setQuestions(randomIds);
         setAnswers(shuffleArray([...randomIds]));
-
-        // let sounds = randomIds.map(o => {
-        //     let item = learnData.filter(l => l.id == o)[0];
-        //     return new Audio('./asset/cs/' + item.id + '-cs.mp3');
-        // });
-        // for(let i=0; i<randomIds.length; i++) {
-
-        // }
-        // setAnswerSounds(sounds);
-
-        // const questions = getRandomIds(learnData);
-
     }, []);
 
     const addConnection = () => {
@@ -100,7 +89,7 @@ export const Game = (props: any) => {
         setConnections(newConnections);
         setStartSide(null);
         setEndSide(null);
-        connectRef.current.play();
+        playSound("connect");
         if (newConnections.length == 3) onSubmit();
     }
 
@@ -117,8 +106,15 @@ export const Game = (props: any) => {
         let side = e.target.dataset.side;
         let index = e.target.dataset.index;
         if (!side) return; //click into free space
-        if (side == "left") ed(`enaudio${index}`).play();
-        if (side == "right") ed(`csaudio${index}`).play();
+        // if (side == "left") ed(`enaudio${index}`).play();
+        if (side == "right") {
+            let now = answers[index - 1];
+            playSound(`cs/${now}-cs`);
+        }
+        if (side == "left") {
+            let now = questions[index - 1];
+            playSound(`en/${now}`);
+        }
         // if (side == "right") answerSounds[index].play();
         if (startSide == null) {
             setStartSide(side);
@@ -129,8 +125,14 @@ export const Game = (props: any) => {
     }
 
     useEffect(() => {
-        if (endSide == "left") ed(`enaudio${endIndex}`).play();
-        if (endSide == "right") ed(`csaudio${endIndex}`).play();
+        if (endSide == "right") {
+            let now = answers[endIndex-1];
+            playSound(`cs/${now}-cs`);
+        }
+        if (endSide == "left") {
+            let now = questions[endIndex-1];
+            playSound(`en/${now}`);
+        }
     }, [endSide, endIndex]);
 
     const onMouseMove = (e: any) => {
@@ -183,13 +185,13 @@ export const Game = (props: any) => {
         setEvaluating(true);
 
         if (testConnections()) {
-            successRef.current.play();
+            playSound("success");
             setShowEval("success");
             setTimeout(() => {
                 onSuccess(eligiblePoints);
             }, 2500);
         } else {
-            failRef.current.play();
+            playSound("fail");
             setShowEval("fail");
             setEligiblePoints(eligiblePoints > 0 ? eligiblePoints - 1 : 0);
             setTimeout(() => {
@@ -227,30 +229,6 @@ export const Game = (props: any) => {
                 </div>
             </div>
             }
-
-            <audio ref={connectRef} controls={false} autoPlay={false} preload="true">
-                <source src={`./asset/connect.mp3`} type="audio/mpeg" />
-            </audio>
-            <audio ref={successRef} controls={false} autoPlay={false} preload="true">
-                <source src={`./asset/success.mp3`} type="audio/mpeg" />
-            </audio>
-            <audio ref={failRef} controls={false} autoPlay={false} preload="true">
-                <source src={`./asset/fail.mp3`} type="audio/mpeg" />
-            </audio>
-            {/* <div className="game-top-left">
-                Height: {vh}
-
-                <div>{dragging ? "Dragging" : "-"}</div>
-                <div>S{startSide}{startIndex} To E{endSide}{endIndex}, INFO {info}</div>
-                {
-                    connections.map(o => {
-                        return (
-                            <div>{o.from} connected to {o.to}</div>
-                        )
-                    })
-                }
-            </div> */}
-
             <svg
                 className={classNames("game-svg", { "evaluating": evaluating })}
                 ref={svgRef}>
@@ -269,7 +247,6 @@ export const Game = (props: any) => {
             </svg>
             <div
                 className={classNames("challenge", { "evaluating": evaluating })}
-                // onAnswerMouseDown={onAnswerMouseDown}
                 onMouseDown={onMouseDown}
                 onTouchStart={onMouseDown}
                 onMouseMove={onMouseMove}
@@ -279,9 +256,9 @@ export const Game = (props: any) => {
             >
                 <div className="challenge-inner">
 
-                    <div className="game-round">
+                    {/* <div className="game-round">
                         {[...Array(maxRounds)].map((e, i) => <span className={classNames("gr-badge", { "is-done icon icon-check": (i + 1 < round), "is-current": (round == i + 1) })} key={i}><span>{i + 1}</span></span>)}
-                    </div>
+                    </div> */}
 
                     <div
                         className={classNames("challenge-duo")}>
@@ -301,9 +278,6 @@ export const Game = (props: any) => {
                                         data-side="left"
                                         data-operation={`enword${index}`}
                                     >
-                                        <audio id={`enaudio${index}`} controls={false} autoPlay={false} preload="true">
-                                            <source src={`./asset/en/${item.id}.mp3`} type="audio/mpeg" />
-                                        </audio>
                                         <div className="bubble">
                                             <span className="lknot knot" id={`leftknot${index}`}></span>
                                             <span className="text">{item.en}</span>
@@ -328,11 +302,6 @@ export const Game = (props: any) => {
                                         data-side="right"
                                         data-operation={`csword${index}`}
                                     >
-                                        <audio className="audio" id={`csaudio${index}`} controls={false} autoPlay={false} preload="true">
-                                            <source src={`./asset/cs/${item.id}-cs.mp3`} type="audio/mpeg" />
-                                        </audio>
-                                        {/* <button onClick={() => onPlay(`csaudio${index}`)}>PLAY</button>
-                                        <button onClick={() => apinPlay(index)}>APIPLAY</button> */}
                                         <div className="bubble">
                                             <span className="rknot knot" id={`rightknot${index}`}></span>
                                             <span className="text">{item.cs}</span>

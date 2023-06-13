@@ -106,27 +106,6 @@
     }
 }
 
-.game-top-right {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    z-index: 30;
-    background: #190f41;
-}
-.game-top-left {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    z-index: 30;
-    background: #190f41;
-}
-.game-bottom-right {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    z-index: 30;
-}
-
 .cross {
     width: 200px;
     height: 200px;
@@ -267,25 +246,34 @@
     color: #fff;
     line-height: 16px;
 
+    & > span {
+        display: none;
+    }
     &.is-done {
         background: rgba(#fff, 0.15);
         &::before {
             line-height: 16px;
         }
-        & > span {
-            display: none;
-        }
     }
 
     &.is-current {
         background: rgba(#fff, 0.15);
-        // &:before {
-        //     content: "?";
-        //     line-height: 16px;
-        // }
+        & > span {
+            display: block;
+        }
     }
 }
 
 .game-score {
-    font-size: 34px;
+    font-size: 38px;
+    display: flex;
+    line-height: 48px;
+    align-items: center;
+    .value {
+        padding: 0 8px 0 0;
+    }
+    .icon {
+        color: orange;
+        font-size: 30px;
+    }
 }

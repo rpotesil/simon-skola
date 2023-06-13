@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { learnData } from "../data/english"
 import { toggleFullScreen } from "../helpers/toggleFullscreen"
+import { playSound } from "../start";
 
 export const Dictionary: any = (props) => {
 
@@ -37,17 +38,11 @@ export const Dictionary: any = (props) => {
                                         {(index + 1)}
                                     </div>
                                     <div className="di-left">
-                                        <audio id={`csaudio${o.id}`} controls={false} autoPlay={false} onCanPlay={() => onLoad(o, "cs")}>
-                                            <source src={`./asset/cs/${o.id}-cs.mp3`} type="audio/mpeg" />
-                                        </audio>
-                                        <button disabled={!loaded.includes(o.id + "cs")} type="button" onClick={() => onPlay(o, "cs")} className="audio-play icon-play"></button>
+                                        <button type="button" onClick={() => playSound(`cs/${o.id}-cs`)} className="audio-play icon-play"></button>
                                         <span className="di-text">{o.cs}</span>
                                     </div>
                                     <div className="di-right">
-                                        <audio id={`enaudio${o.id}`} controls={false} autoPlay={false} onCanPlay={() => onLoad(o, "en")}>
-                                            <source src={`./asset/en/${o.id}.mp3`} type="audio/mpeg" />
-                                        </audio>
-                                        <button disabled={!loaded.includes(o.id + "en")} type="button" onClick={() => onPlay(o, "en")} className="audio-play icon-play"></button>
+                                        <button type="button" onClick={() => playSound("en/" + o.id)} className="audio-play icon-play"></button>
                                         <span className="di-text">{o.en}</span>
                                     </div>
                                 </div>

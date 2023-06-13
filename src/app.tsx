@@ -6,6 +6,7 @@ import { Dictionary } from "./page/Dictionary";
 import { GameSession } from "./page/GameSession";
 import { WelcomeScreen } from "./page/WelcomeScreen";
 import { Share } from "./page/Share";
+import { Test } from "./page/Test";
 
 export const App = () => {
     const [appState, setAppState] = useState<IAppState>(AppState);
@@ -21,6 +22,7 @@ export const App = () => {
                         {page == "game" && <GameSession setPage={setPage} />}
                         {page == "welcome" && <WelcomeScreen setPage={setPage} />}
                         {page == "share" && <Share setPage={setPage} />}
+                        {page == "test" && <Test setPage={setPage} />}
                     </div>
                 </CSSTransition>
             </SwitchTransition>
