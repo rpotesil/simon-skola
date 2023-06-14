@@ -1,8 +1,13 @@
 import React from "react";
 import { toggleFullScreen } from "../helpers/toggleFullscreen";
+import { playSound } from "../start";
 
 export const Share = (props) => {
     const { setPage } = props;
+    const onNav = (page: string) => {
+        playSound("connect");
+        setPage(page);
+    }
     return (
         <>
             <div className="game-top-right">
@@ -18,11 +23,11 @@ export const Share = (props) => {
                     <div className="pb-0">
                         <img src="./asset/appqr.svg" width={300} height={300} />
                     </div>
-                    <p className="text-lead">untitled.cz/learn</p> 
+                    <p className="text-lead">https://untitled.cz/learn</p> 
 
                     <ul className="menu-list">
                         <li>
-                            <button onClick={() => setPage("welcome")} className="menu-cta2">Zpět</button>
+                            <button onClick={() => onNav("welcome")} className="menu-cta2">Zpět</button>
                         </li>
                     </ul>
                     <p>&copy; 2023 Radim Potěšil</p>

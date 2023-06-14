@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { learnData } from "../data/english";
 import { toggleFullScreen } from "../helpers/toggleFullscreen";
 import { playSound } from "../start";
+import { ed } from "../helpers/dom";
 
 declare const startConfetti;
 declare const stopConfetti;
@@ -14,13 +15,15 @@ export const Test = (props) => {
     const round = 3;
     const score = 9;
 
-    useEffect(() => {
-        startConfetti();
-        return () => {
-            stopConfetti();
-        };
-    }, []);
-
+    // useEffect(() => {
+    //     startConfetti();
+    //     return () => {
+    //         stopConfetti();
+    //     };
+    // }, []);
+    const shout = (id: string, lang: string) => {
+        ed(id + lang).style.display = "block";
+    }
 
 
     return (
@@ -31,34 +34,42 @@ export const Test = (props) => {
             </div>
 
 
-            <div className="game-center-center text-center">
+            {/* <div className="game-center-center text-center">
                 <div className="menu-title mb-8">Hotovo!</div>
                 <div className="game-score mb-48">
                     <span className="value">Skóre: {score}</span>
                     <span className="icon icon-star"></span>
                 </div>
                 <button onClick={() => setPage("welcome")} className="menu-cta2">Pokračovat</button>
-            </div>
+            </div> */}
 
 
-            {/* <div className="challenge">
+            <div className="challenge">
                 <div className="challenge-long">
-                    <button onClick={() => playSound("connect")} className="menu-cta2">Test1</button>
-                    <button onClick={() => playSound("success")} className="menu-cta2">Test1</button>
-                    <button onClick={() => playSound("en/cap")} className="menu-cta2">Test1</button>
+
 
                     {
                         learnData.map((o, index) => {
-                            return (
-                                <div key={o.cs} className="dict-item">
+                            return (<>
+                                <div key={o.cs} className="dict-item" id={o.id + "cs"} style={{ display: "none" }}>
+                                    <audio controls>
+                                        <source src={`./asset/cs/${o.id}-cs.mp3`} onError={() => shout(o.id, "cs")} type="audio/mpeg" />
+                                    </audio>
+                                    {o.cs}
+                                </div>
+                                <div key={o.cs} className="dict-item" id={o.id + "en"} style={{ display: "none" }}>
+                                    <audio controls>
+                                        <source src={`./asset/en/${o.id}.mp3`} onError={() => shout(o.id, "en")} type="audio/mpeg" />
+                                    </audio>
                                     {o.en}
                                 </div>
+                            </>
                             )
                         })
                     }
                 </div>
             </div>
-     */}
+
 
         </>
     )

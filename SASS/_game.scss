@@ -86,6 +86,13 @@
     }
 }
 
+@media screen and (max-height: 601px) {
+    .answer {
+        height: 90px;
+        margin: 24px  0;
+    }
+}
+
 .game-svg {
     position: absolute;
     inset: 0;
@@ -234,9 +241,9 @@
 }
 
 .gr-badge {
-    width: 18px;
-    height: 18px;
-    font-size: 14px;
+    width: 6px;
+    height: 6px;
+    overflow: hidden;
     border-radius: 50%;
     display: block;
     margin: 0 4px;
@@ -244,23 +251,13 @@
     border: 1px solid rgba(#fff, 0.5);
     box-sizing: border-box;
     color: #fff;
-    line-height: 16px;
 
-    & > span {
-        display: none;
-    }
     &.is-done {
-        background: rgba(#fff, 0.15);
-        &::before {
-            line-height: 16px;
-        }
+        background: rgba(#fff, 0.5);
     }
 
     &.is-current {
-        background: rgba(#fff, 0.15);
-        & > span {
-            display: block;
-        }
+        background: rgba(#fff, 1);
     }
 }
 

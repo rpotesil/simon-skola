@@ -3,34 +3,53 @@ import { toggleFullScreen } from "../helpers/toggleFullscreen";
 import { Game } from "./Game";
 import classNames from "classnames";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
+import { playSound } from "../start";
 
+declare const startConfetti;
+declare const stopConfetti;
 export const GameSession = (props) => {
     const { setPage } = props;
     const [round, setRound] = useState(1);
     const [score, setScore] = useState(0);
-    const [showGame, setShowGame] = useState(false);
+    const [show, setShow] = useState("round");
     const [message, setMessage] = useState("");
     const maxRounds = 3;
 
     const onSuccess = (eligiblePoints) => {
-        setShowGame(false);
-        setScore(score + eligiblePoints);
-        setMessage("Kolo " + (round + 1));
-        setRound(round + 1);
+        let newScore = score + eligiblePoints;
+        let newRound = round + 1;
+        setScore(newScore);
+
+        if (newRound > maxRounds) {
+            playSound("done");
+            setShow("done");
+            startConfetti();
+            return;
+        }
+        playSound("round");
+        setShow("round");
+        setMessage("Kolo " + newRound);
+        setRound(newRound);
         setTimeout(() => {
-            setShowGame(true);
+            setShow("game");
         }, 1200);
     }
 
+    const onNav = (page: string) => {
+        playSound("connect");
+        setPage(page);
+    }
+
     useEffect(() => {
+        playSound("start");
         setMessage("Kolo 1");
         setTimeout(() => {
-            setShowGame(true);
+            setShow("game");
         }, 1200);
+        return () => {
+            stopConfetti();
+        };
     }, []);
-
-
-
 
     return (
         <>
@@ -47,28 +66,34 @@ export const GameSession = (props) => {
             </div>
             <div className="game-bottom-center">
                 <div className="game-round">
-                    {[...Array(maxRounds)].map((e, i) => <span className={classNames("gr-badge", { "is-done icon icon-check": (i + 1 < round), "is-current": (round == i + 1) })} key={i}><span>{i + 1}</span></span>)}
+                    {[...Array(maxRounds)].map((e, i) => <span className={classNames("gr-badge", { "is-done icon icon-check": (i + 1 < round), "is-current": (round == i + 1) })} key={i}></span>)}
                 </div>
             </div>
 
             <SwitchTransition>
-                <CSSTransition timeout={300} key={showGame.toString()}>
+                <CSSTransition timeout={300} key={show}>
                     <div className="router-wrapper">
                         {
-                            showGame ? <>
-                                <Game round={round} onSuccess={onSuccess} maxRounds={maxRounds} />
-                            </>
-                                :
-                                <div className="game-center-center">
-                                    <div className="menu-title mb-24">{message}</div>
-                                    <div className="game-round">
-                                        {[...Array(maxRounds)].map((e, i) => <span className={classNames("gr-badge", { "is-done icon icon-check": (i + 1 < round), "is-current": (round == i + 1) })} key={i}><span>{i + 1}</span></span>)}
-                                    </div>
+                            show == "game" && <Game round={round} onSuccess={onSuccess} maxRounds={maxRounds} />
+                        }
+                        {
+                            show == "done" && <div className="game-center-center text-center">
+                                <div className="menu-title mb-8">Hotovo!</div>
+                                <div className="game-score mb-48">
+                                    <span className="value">Skóre: {score}</span>
+                                    <span className="icon icon-star"></span>
                                 </div>
+                                <button onClick={() => onNav("welcome")} className="menu-cta2">Pokračovat</button>
+                            </div>
+                        }
+                        {
+                            show == "round" && <div className="game-center-center">
+                                <div className="menu-title mb-24">{message}</div>
+                            </div>
                         }
                     </div>
                 </CSSTransition>
-            </SwitchTransition>
+            </SwitchTransition >
         </>
     )
 }
